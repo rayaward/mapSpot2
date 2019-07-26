@@ -12,8 +12,12 @@ var curBearing = 0
 var curZoom = 1
 var curCenter = [1, 1]
 var curGeoCoords, curActiveRectangle, curEndCenters
-var leftCenter = { lng: -84.3880, lat: 33.7490 }
-var rightCenter = { lng: -82.3880, lat: 33.7490 }
+    // Atlanta: 
+    // var leftCenter = { lng: -84.3880, lat: 33.7490 }
+    // var rightCenter = { lng: -82.3880, lat: 33.7490 }
+    // NOLA
+var leftCenter = { lng: -90.0715, lat: 29.9511 }
+var rightCenter = { lng: -90.0715, lat: 29.9511 }
 var rc, lc
 var currentPoints = null;
 var projRatio = 0.5
@@ -32,9 +36,12 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXRsbWFwcm9vbSIsImEiOiJjamtiZzJ6dGIybTBkM3dwY
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj', // style from online MapBox GL Studio
-    zoom: 12,
+    zoom: 12.5,
     bearing: 0, // refers to rotation angle
-    center: [-84.3951, 33.7634],
+    // Atlanta: 
+    // center: [-84.3951, 33.7634],
+    // New Orleans
+    center: [-90.0715, 29.9511],
     interactive: true
 });
 /*--------------------------------------------------------------------------------------------------------------------*/

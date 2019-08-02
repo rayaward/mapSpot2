@@ -36,7 +36,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXRsbWFwcm9vbSIsImEiOiJjamtiZzJ6dGIybTBkM3dwY
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj', // style from online MapBox GL Studio
-    zoom: 10,
+    zoom: 12,
     bearing: 0, // refers to rotation angle
     // Atlanta: 
     // center: [-84.3951, 33.7634],
@@ -409,7 +409,7 @@ map.on('load', function() {
                     [85, '#e92f2f']
                 ]
             },
-            'fill-opacity': 0.75
+            'fill-opacity': 0.6
         }
     });
     // Median Income
@@ -434,34 +434,34 @@ map.on('load', function() {
                     [117250, '#4F6605']
                 ]
             },
-            'fill-opacity': 0.75
+            'fill-opacity': 0.6
         }
     });
     // Percent White Occupancy
-    // map.addSource('GALA_White', {
-    //     type: 'vector',
-    //     url: 'mapbox://'
-    // });
-    // map.addLayer({
-    //     'id': 'Percent White Occupancy',
-    //     'type': 'fill',
-    //     'source': 'GALA_White',
-    //     'source-layer': '',
-    //     'layout': {
-    //         'visibility': 'none'
-    //     },
-    //     'paint': {
-    //         'fill-outline-color': '#f7ff05',
-    //         'fill-color': {
-    //             property: 'MedIncome',
-    //             stops: [
-    //                 [33, '#fffcd6'],
-    //                 [94, '#0C2744']
-    //             ]
-    //         },
-    //         'fill-opacity': 0.75
-    //     }
-    // });
+    map.addSource('GALA_White', {
+        type: 'vector',
+        url: 'mapbox://atlmaproom.5oq60h88'
+    });
+    map.addLayer({
+        'id': 'Percent White Occupancy',
+        'type': 'fill',
+        'source': 'GALA_White',
+        'source-layer': 'GALA_white_Merged-9mxzcb',
+        'layout': {
+            'visibility': 'none'
+        },
+        'paint': {
+            'fill-outline-color': '#f7ff05',
+            'fill-color': {
+                property: 'White_pop',
+                stops: [
+                    [33, '#fffcd6'],
+                    [94, '#0C2744']
+                ]
+            },
+            'fill-opacity': 0.6
+        }
+    });
     // // MARTA Buses and Rail (all one color)
     // map.addSource('MARTA', {
     //     type: 'vector',

@@ -36,7 +36,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXRsbWFwcm9vbSIsImEiOiJjamtiZzJ6dGIybTBkM3dwY
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj', // style from online MapBox GL Studio
-    zoom: 12.5,
+    zoom: 10,
     bearing: 0, // refers to rotation angle
     // Atlanta: 
     // center: [-84.3951, 33.7634],
@@ -222,15 +222,15 @@ socket.on('pushSensorUpdate', function(data) {
  * when button is clicked, all user interaction (pinch/drag) with map is
  * disabled to "lock" so map does not become disaligned while drawing
  */
-document.getElementById('interactionButton').addEventListener('click', function() {
-    map.boxZoom.disable();
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-    map.dragRotate.disable();
-    map.keyboard.disable();
-    map.doubleClickZoom.disable();
-    map.touchZoomRotate.disable();
-});
+// document.getElementById('interactionButton').addEventListener('click', function() {
+//     map.boxZoom.disable();
+//     map.scrollZoom.disable();
+//     map.dragPan.disable();
+//     map.dragRotate.disable();
+//     map.keyboard.disable();
+//     map.doubleClickZoom.disable();
+//     map.touchZoomRotate.disable();
+// });
 
 // unlock the map 
 
@@ -356,57 +356,163 @@ map.on('load', function() {
             'fill-opacity': 0.5
         }
     });
-    // MARTA Buses and Rail (all one color)
-    map.addSource('MARTA', {
+    // nola layers 
+    map.addSource('ACS2', {
         type: 'vector',
-        url: 'mapbox://atlmaproom.cxppjs0d'
+        url: 'mapbox://atlmaproom.cgj8w0fp'
     });
     map.addLayer({
-        'id': 'MARTA',
-        'type': 'line',
-        'source': 'MARTA',
-        'source-layer': 'marta-bi9p6y',
+        'id': 'College Educated Change (LA)',
+        'type': 'fill',
+        'source': 'ACS2',
+        'source-layer': 'ALL_LA_EDU-96gg8e',
         'layout': {
-            'visibility': 'none',
-            'line-join': 'round',
-            'line-cap': 'round'
+            'visibility': 'none'
         },
         'paint': {
-            'line-width': 3,
-            'line-color': "#32ffd9",
-            'line-opacity': 0.8
+            'fill-outline-color': '#f7ff05',
+            'fill-color': {
+                property: 'PctBachHig',
+                stops: [
+                    //[0, '#00a4d1'],
+                    //["", '#ffffff']
+                    [6, '#fffcd6'],
+                    [60, '#e92f2f']
+                ]
+            },
+            'fill-opacity': 0.5
         }
     });
 
+    // Merged Ga and LA layers
+    // College education
+    map.addSource('GALA_EDU', {
+        type: 'vector',
+        url: 'mapbox://atlmaproom.6izm8u6q'
+    });
     map.addLayer({
-        'id': 'ATLMaps:r9hrz',
-        'type': 'raster',
-        'source': {
-            'type': 'raster',
-            'tiles': [
-                'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9hrz'
-            ],
-            'tileSize': 256
+        'id': 'Percent College Educated',
+        'type': 'fill',
+        'source': 'GALA_EDU',
+        'source-layer': 'GALA_Edu_Merged-cvc094',
+        'layout': {
+            'visibility': 'none'
+        },
+        'paint': {
+            'fill-outline-color': '#f7ff05',
+            'fill-color': {
+                property: 'PctBachorH',
+                stops: [
+                    //[0, '#00a4d1'],
+                    //["", '#ffffff']
+                    [8, '#fffcd6'],
+                    [85, '#e92f2f']
+                ]
+            },
+            'fill-opacity': 0.75
         }
     });
+    // Median Income
+    map.addSource('GALA_INC', {
+        type: 'vector',
+        url: 'mapbox://atlmaproom.d77n76r9'
+    });
+    map.addLayer({
+        'id': 'Median Income',
+        'type': 'fill',
+        'source': 'GALA_INC',
+        'source-layer': 'GALA_INC_Merged-5pmdmu',
+        'layout': {
+            'visibility': 'none'
+        },
+        'paint': {
+            'fill-outline-color': '#f7ff05',
+            'fill-color': {
+                property: 'MedIncome',
+                stops: [
+                    [10906, '#fffcd6'],
+                    [117250, '#4F6605']
+                ]
+            },
+            'fill-opacity': 0.75
+        }
+    });
+    // Percent White Occupancy
+    // map.addSource('GALA_White', {
+    //     type: 'vector',
+    //     url: 'mapbox://'
+    // });
+    // map.addLayer({
+    //     'id': 'Percent White Occupancy',
+    //     'type': 'fill',
+    //     'source': 'GALA_White',
+    //     'source-layer': '',
+    //     'layout': {
+    //         'visibility': 'none'
+    //     },
+    //     'paint': {
+    //         'fill-outline-color': '#f7ff05',
+    //         'fill-color': {
+    //             property: 'MedIncome',
+    //             stops: [
+    //                 [33, '#fffcd6'],
+    //                 [94, '#0C2744']
+    //             ]
+    //         },
+    //         'fill-opacity': 0.75
+    //     }
+    // });
+    // // MARTA Buses and Rail (all one color)
+    // map.addSource('MARTA', {
+    //     type: 'vector',
+    //     url: 'mapbox://atlmaproom.cxppjs0d'
+    // });
+    // map.addLayer({
+    //     'id': 'MARTA',
+    //     'type': 'line',
+    //     'source': 'MARTA',
+    //     'source-layer': 'marta-bi9p6y',
+    //     'layout': {
+    //         'visibility': 'none',
+    //         'line-join': 'round',
+    //         'line-cap': 'round'
+    //     },
+    //     'paint': {
+    //         'line-width': 3,
+    //         'line-color': "#32ffd9",
+    //         'line-opacity': 0.8
+    //     }
+    // });
 
-    map.addLayer({
-        'id': 'ATLMaps:r9jr2',
-        'type': 'raster',
-        'source': {
-            'type': 'raster',
-            'tiles': [
-                'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9jr2'
-            ],
-            'tileSize': 256
-        }
-    });
+    // map.addLayer({
+    //     'id': 'ATLMaps:r9hrz',
+    //     'type': 'raster',
+    //     'source': {
+    //         'type': 'raster',
+    //         'tiles': [
+    //             'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9hrz'
+    //         ],
+    //         'tileSize': 256
+    //     }
+    // });
+
+    // map.addLayer({
+    //     'id': 'ATLMaps:r9jr2',
+    //     'type': 'raster',
+    //     'source': {
+    //         'type': 'raster',
+    //         'tiles': [
+    //             'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9jr2'
+    //         ],
+    //         'tileSize': 256
+    //     }
+    // });
 });
 
 /**
  * link layers to buttons to toggle on screen
  */
-var toggleableLayerIds = ['Median Income Change', 'College Educated Change', 'White Occupants Change', 'MARTA'];
+var toggleableLayerIds = ['Median Income Change', 'College Educated Change', 'White Occupants Change', 'Median Income', 'Percent College Educated', 'Percent White Occupancy'];
 
 for (var i = 0; i < toggleableLayerIds.length; i++) {
     var id = toggleableLayerIds[i];
@@ -417,6 +523,7 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
         var clickedLayer = this.textContent;
         e.preventDefault();
         e.stopPropagation();
+        // console.log("here")
         // if (!(clickedLayer===('Property Assessment'))){
         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
         if (visibility === 'visible') {
@@ -441,7 +548,7 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
         //         this.className = 'active';
         //     }
         // }
-        console.log("Sending layer change to server...")
+        console.log("Sending layer change...")
     };
 
     var layers = document.getElementById('menu');

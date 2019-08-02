@@ -5,7 +5,7 @@ var app = express();
 var http = require('http');
 var bodyParser = require('body-parser');
 var server = http.createServer(app);
-// var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server);
 
 // Main server runs on this port, will be used by other scripts
 server.listen(8080);
@@ -20,9 +20,9 @@ app.use(bodyParser.json());
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/html/index.html');
 });
-// app.get('/controller.html', function(req, res){
-//   res.sendFile(__dirname + '/html/controller.html');
-// });
+app.get('/controller.html', function(req, res) {
+    res.sendFile(__dirname + '/html/controller.html');
+});
 app.get('/projector.html', function(req, res) {
     res.sendFile(__dirname + '/html/projector.html');
 });

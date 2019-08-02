@@ -16,16 +16,6 @@ Navigate to the main directory and then move down one level to the /src folder. 
 
 Once the server is running, you should be able to navigate to the page in a web browser (http://localhost:8080) in order to view the index.html page, which shows links to the Controller, Projector, and Table pages. These three pages can be opened as separate tabs or windows in order to test the system.
 
-#### Testing
-With all of the pages open in a browser, basic functionality testing should include the following:
-1. Updating the map position on the Controller by dragging should update the map view on the Projector
-2. Toggling a layer on the Controller should cause the corresponding layer to be shown or hidden from the Projector
-3. Enabling the Tax Assessment layer and zooming in to a smaller region should cause property entries to appear on the Table page
-4. Selecting an entry on the Table page should highlight the property in yellow and display detailed information on the Projector
-5. (with **sensor_server** running) Moving the projector should smoothly pan the Projector view along the rectangle guide.
-
-
-
 ## Built With
 
 * [MapBox GL](https://www.mapbox.com/mapbox-gl-js/api/) - Open-source libraries for embedding maps

@@ -5,16 +5,15 @@ var socket = io('http://maproom.lmc.gatech.edu:8080/');
 var activeRectangle = document.getElementById("longRect");
 var rectWidth = 730;
 var rectHeight = 200;
-// var propertyAssessmentEnabled = false;
-// Global variable definitions
 var leftLong, rightLong, lowerLat, upperLat
 var curBearing = 0
 var curZoom = 1
 var curCenter = [1, 1]
 var curGeoCoords, curActiveRectangle, curEndCenters
-    // Atlanta: 
-    // var leftCenter = { lng: -84.3880, lat: 33.7490 }
-    // var rightCenter = { lng: -82.3880, lat: 33.7490 }
+    //City Coordinates
+    //     // Atlanta: 
+    // var ATLleftCenter = { lng: -84.3880, lat: 33.7490 }
+    // var ATLrightCenter = { lng: -82.3880, lat: 33.7490 }
     // NOLA
 var leftCenter = { lng: -90.0715, lat: 29.9511 }
 var rightCenter = { lng: -90.0715, lat: 29.9511 }
@@ -22,6 +21,16 @@ var rc, lc
 var currentPoints = null;
 var projRatio = 0.5
 var zoomAdd = 2.75
+
+var isLocked = false
+
+const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+})
+
+document.getElementById("interactionButton").setAttribute('disabled', 'enabled');
 
 
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -222,17 +231,32 @@ socket.on('pushSensorUpdate', function(data) {
  * when button is clicked, all user interaction (pinch/drag) with map is
  * disabled to "lock" so map does not become disaligned while drawing
  */
-// document.getElementById('interactionButton').addEventListener('click', function() {
-//     map.boxZoom.disable();
-//     map.scrollZoom.disable();
-//     map.dragPan.disable();
-//     map.dragRotate.disable();
-//     map.keyboard.disable();
-//     map.doubleClickZoom.disable();
-//     map.touchZoomRotate.disable();
-// });
+document.getElementById('interactionButton').addEventListener('click', function() {
+    // lock the map 
+    if (isLocked == false) {
+        map.boxZoom.disable();
+        map.scrollZoom.disable();
+        map.dragPan.disable();
+        map.dragRotate.disable();
+        map.keyboard.disable();
+        map.doubleClickZoom.disable();
+        map.touchZoomRotate.disable();
+        isLocked = true;
+    }
 
-// unlock the map 
+    // unlock the map 
+    if (isLocked == true) {
+        map.boxZoom.enable();
+        map.scrollZoom.enable();
+        map.dragPan.enable();
+        map.dragRotate.enable();
+        map.keyboard.enable();
+        map.doubleClickZoom.enable();
+        map.touchZoomRotate.enable();
+        isLocked = false;
+    }
+});
+
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Toggle map layers                                                                                                 */
@@ -265,9 +289,11 @@ map.on('load', function() {
         maxWidth: 80,
         unit: 'imperial'
     });
+
     map.addControl(scale);
     scale.setUnit('imperial');
     map.addControl(nav, 'bottom-left');
+
     // beltline layer
     map.addSource('beltline', {
         type: 'vector',
@@ -286,101 +312,6 @@ map.on('load', function() {
         'paint': {
             'line-color': 'yellow green',
             'line-width': 8
-        }
-    });
-    // Change median income later
-    map.addSource('ACS', {
-        type: 'vector',
-        url: 'mapbox://atlmaproom.c97zkvti'
-    });
-    map.addLayer({
-        'id': 'Median Income Change',
-        'type': 'fill',
-        'source': 'ACS',
-        'source-layer': 'merged2-53z777',
-        'layout': {
-            'visibility': 'none',
-        },
-        'paint': {
-            'fill-outline-color': '#f7ff05',
-            'fill-color': {
-                property: 'P_C_M_I',
-                stops: [
-                    [-100, '#00a4d1'],
-                    [0, '#fffcd6'],
-                    [100, '#e92f2f']
-                ]
-            },
-            'fill-opacity': 0.5
-        }
-    });
-    map.addLayer({
-        'id': 'College Educated Change',
-        'type': 'fill',
-        'source': 'ACS',
-        'source-layer': 'merged2-53z777',
-        'layout': {
-            'visibility': 'none',
-        },
-        'paint': {
-            'fill-outline-color': '#f7ff05',
-            'fill-color': {
-                property: 'C_C_E_P',
-                stops: [
-                    [-40, '#00a4d1'],
-                    [0, '#fffcd6'],
-                    [40, '#e92f2f']
-                ]
-            },
-            'fill-opacity': 0.5
-        }
-    });
-    map.addLayer({
-        'id': 'White Occupants Change',
-        'type': 'fill',
-        'source': 'ACS',
-        'source-layer': 'merged2-53z777',
-        'layout': {
-            'visibility': 'none',
-        },
-        'paint': {
-            'fill-outline-color': '#f7ff05',
-            'fill-color': {
-                property: 'C_W_P__',
-                stops: [
-                    [-30, '#00a4d1'],
-                    [0, '#fffcd6'],
-                    [30, '#e92f2f']
-                ]
-            },
-            'fill-opacity': 0.5
-        }
-    });
-    // nola layers 
-    map.addSource('ACS2', {
-        type: 'vector',
-        url: 'mapbox://atlmaproom.cgj8w0fp'
-    });
-    map.addLayer({
-        'id': 'College Educated Change (LA)',
-        'type': 'fill',
-        'source': 'ACS2',
-        'source-layer': 'ALL_LA_EDU-96gg8e',
-        'layout': {
-            'visibility': 'none'
-        },
-        'paint': {
-            'fill-outline-color': '#f7ff05',
-            'fill-color': {
-                property: 'PctBachHig',
-                stops: [
-                    //[0, '#00a4d1'],
-                    //["", '#ffffff']
-                    [6, '#fffcd6'],
-                    [60, '#e92f2f']
-                ]
-            },
-            'fill-opacity': 0.5
         }
     });
 
@@ -462,57 +393,39 @@ map.on('load', function() {
             'fill-opacity': 0.6
         }
     });
-    // // MARTA Buses and Rail (all one color)
-    // map.addSource('MARTA', {
-    //     type: 'vector',
-    //     url: 'mapbox://atlmaproom.cxppjs0d'
-    // });
-    // map.addLayer({
-    //     'id': 'MARTA',
-    //     'type': 'line',
-    //     'source': 'MARTA',
-    //     'source-layer': 'marta-bi9p6y',
-    //     'layout': {
-    //         'visibility': 'none',
-    //         'line-join': 'round',
-    //         'line-cap': 'round'
-    //     },
-    //     'paint': {
-    //         'line-width': 3,
-    //         'line-color': "#32ffd9",
-    //         'line-opacity': 0.8
-    //     }
-    // });
+    /* HERE IS WHERE YOU ADD A NEW DATA LAYER
+     map.addSource('_______________', {
+        type: 'vector',
+        url: '_____________'
+    });
+    map.addLayer({
+        'id': '     ',
+        'type': 'fill',
+        'source': '        ',
+        'source-layer': '           ',
+        'layout': {
+            'visibility': 'none'
+        },
+        'paint': {
+            'fill-outline-color': '#     ',
+            'fill-color': {
+                property: '         ',
+                stops: [
+                    [33, '#     '],
+                    [94, '#     ']
+                ]
+            },
+            'fill-opacity': 0.6
+        }
+    }); */
 
-    // map.addLayer({
-    //     'id': 'ATLMaps:r9hrz',
-    //     'type': 'raster',
-    //     'source': {
-    //         'type': 'raster',
-    //         'tiles': [
-    //             'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9hrz'
-    //         ],
-    //         'tileSize': 256
-    //     }
-    // });
 
-    // map.addLayer({
-    //     'id': 'ATLMaps:r9jr2',
-    //     'type': 'raster',
-    //     'source': {
-    //         'type': 'raster',
-    //         'tiles': [
-    //             'https://geoserver.ecds.emory.edu/ATLMaps/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ATLMaps:r9jr2'
-    //         ],
-    //         'tileSize': 256
-    //     }
-    // });
 });
 
 /**
  * link layers to buttons to toggle on screen
  */
-var toggleableLayerIds = ['Median Income Change', 'College Educated Change', 'White Occupants Change', 'Median Income', 'Percent College Educated', 'Percent White Occupancy'];
+var toggleableLayerIds = ['Median Income', 'Percent College Educated', 'Percent White Occupancy'];
 
 for (var i = 0; i < toggleableLayerIds.length; i++) {
     var id = toggleableLayerIds[i];
@@ -523,8 +436,6 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
         var clickedLayer = this.textContent;
         e.preventDefault();
         e.stopPropagation();
-        // console.log("here")
-        // if (!(clickedLayer===('Property Assessment'))){
         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
         if (visibility === 'visible') {
             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
@@ -535,22 +446,34 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
             socket.emit('showLayer', { 'clickedLayer': clickedLayer })
         }
-        //   };
-        // }else{
-        //     if (propertyAssessmentEnabled){
-        //         console.log("Removing property assessments...");
-        //         socket.emit("removeTA", {'info':'none'});
-        //         propertyAssessmentEnabled = false;
-        //         this.className = "";
-        //     }else{
-        //         socket.emit("addTA", {'info':'none'});
-        //         propertyAssessmentEnabled = true;
-        //         this.className = 'active';
-        //     }
-        // }
         console.log("Sending layer change...")
     };
 
     var layers = document.getElementById('menu');
     layers.appendChild(link);
 }
+
+// When a click event occurs on a tract in the median income layer, open a popup at the
+// location of the tract, with description HTML from its properties.
+map.on('click', 'Median Income', function(e) {
+    var coordinates = e.lngLat;
+    var tract = e.features[0].properties.Geo_display_label;
+    var description = e.features[0].properties.MedIncome;
+    description = formatter.format(description);
+
+    new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map);
+
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'Median Income', function() {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'Median Income', function() {
+    map.getCanvas().style.cursor = '';
+});

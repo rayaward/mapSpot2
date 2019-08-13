@@ -20,17 +20,8 @@ app.use(bodyParser.json());
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/html/index.html');
 });
-app.get('/controller.html', function(req, res) {
-    res.sendFile(__dirname + '/html/controller.html');
-});
-app.get('/projector.html', function(req, res) {
-    res.sendFile(__dirname + '/html/projector.html');
-});
 app.get('/controller.js', function(req, res) {
     res.sendFile(__dirname + '/controller.js');
-});
-app.get('/projector.js', function(req, res) {
-    res.sendFile(__dirname + '/projector.js');
 });
 
 /**
@@ -88,10 +79,6 @@ io.on('connection', function(socket) {
         socket.broadcast.emit("projNudge", data);
     });
 
-    /*socket.on('selectPTProjector', function(data){
-      socket.broadcast.emit("sendSelectedProjector", data);
-    });*/
-
     // Fired when a layer is hidden on the controller
     socket.on('hideLayer', function(data) {
         socket.broadcast.emit('pushHideLayer', data)
@@ -111,4 +98,4 @@ io.on('connection', function(socket) {
     socket.on('sensorUpdate', function(data) {
         socket.broadcast.emit('pushSensorUpdate', data);
     })
-});
+})

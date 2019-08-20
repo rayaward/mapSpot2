@@ -491,12 +491,37 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
             this.className = 'active';
             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
             socket.emit('showLayer', { 'clickedLayer': clickedLayer })
+                // createLegend()
         }
     };
 
     var layers = document.getElementById('menu');
     layers.appendChild(link);
 }
+
+// function createLegend() {
+//     // Create the legend and display on the map
+//     var legend = document.createElement('div');
+//     legend.id = 'ts-map-legend';
+
+//     //plug in vars for each slot replace as needed
+//     var tsMapLegendTxtSlot1 = '&gt; 100k';
+//     var tsMapLegendTxtSlot2 = '99k-80k';
+//     var tsMapLegendTxtSlot3 = '79k-60k';
+
+//     var tsMapLegendSlot1Color = '#f14b3e';
+//     var tsMapLegendSlot2Color = '#f18c3e';
+//     var tsMapLegendSlot3Color = '#f5c155';
+
+//     //assemble html and place in var
+//     var content = [];
+//     content.push('<h3 class="ts-map-legend-headline">Legend</h3>');
+//     content.push('<p><div class="ts-map-legend-color ts-map-legend-color-red"></div>' + tsMapLegendTxtSlot1 + '</p>');
+//     content.push('<p><div class="ts-map-legend-color ts-map-legend-color-orange"></div>' + tsMapLegendTxtSlot2 + '</p>');
+//     content.push('<p><div class="ts-map-legend-color ts-map-legend-color-yellow"></div>' + tsMapLegendTxtSlot3 + '</p>');
+//     legend.innerHTML = content.join('');
+//     legend.index = 1;
+// }
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Enable pop ups                                                                                             */
@@ -516,7 +541,7 @@ map.on('click', 'Median Income', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>')
+        .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>' + '<h6>Georgia Median: $52,977<br>Louisiana Median: $46,710<br>United States Median: $57,652</h6>')
         .addTo(map);
 });
 
@@ -545,7 +570,7 @@ map.on('click', 'Percent College Educated', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>')
+        .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: 29.9%<br>Louisiana: 23.4%<br>United States: 30.9%</h6>')
         .addTo(map);
 });
 
@@ -573,7 +598,7 @@ map.on('click', 'Percent White Occupancy', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Percent White Occupancy</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>')
+        .setHTML('<h3>Percent White Occupancy</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 59.7%<br>Louisiana: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 62.6%<br>United States: &nbsp; 72.4%</h6>')
         .addTo(map);
 });
 

@@ -29,7 +29,7 @@
 
 <body>
     <style>
-        #interactionButton {
+        /* #interactionButton {
             display: block;
             position: absolute;
             top: 10px;
@@ -44,7 +44,7 @@
             text-align: center;
             color: #fff;
             background: #2ECC71;
-        }
+        } */
         
         #manual-move {
             position: absolute;
@@ -124,7 +124,6 @@
             text-decoration: none;
             border-bottom: 1px solid rgba(0, 0, 0, 0.25);
             text-align: center;
-            border-radius: 5px;
         }
         
         #menu a:last-child {
@@ -163,7 +162,7 @@
             border-radius: 5px;
         }
         
-        .legend {
+        #ts-map-legend {
             background-color: #fff;
             border-radius: 3px;
             bottom: 10px;
@@ -189,7 +188,7 @@
             margin-right: 5px;
             width: 10px;
         }
-        /* Marker tweaks */
+        /* Pop Up Styling */
         
         .mapboxgl-popup-close-button {
             display: none;
@@ -211,6 +210,7 @@
             margin: 0;
             display: block;
             padding: 10px;
+            padding-left: 15px;
             border-radius: 3px 3px 0 0;
             font-weight: 700;
             margin-top: -15px;
@@ -220,8 +220,9 @@
             margin: 0;
             display: block;
             padding: 10px;
+            padding-left: 15px;
             padding-top: 0px;
-            padding-bottom: 15px;
+            padding-bottom: 0px;
             font-weight: 400;
             font-size: 32px;
         }
@@ -230,9 +231,22 @@
             margin: 0;
             display: block;
             padding: 10px;
+            padding-left: 15px;
             padding-bottom: 3px;
             color: #2ECC71;
             font-weight: 500;
+        }
+        
+        .mapboxgl-popup-content h6 {
+            margin: 0;
+            display: block;
+            padding: 15px;
+            padding-top: 10px;
+            padding-bottom: 15px;
+            color: #4a4a4a;
+            font-weight: 300;
+            text-align: left;
+            line-height: 10px;
         }
         
         .mapboxgl-popup-content div {
@@ -250,9 +264,9 @@
         .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
             border-bottom-color: #2ECC71;
         }
+        /* Custom Select Styling */
         /* The container must be positioned relative: */
-        
-        .custom-select {
+        /* .custom-select {
             position: relative;
             font-family: Arial;
         }
@@ -260,14 +274,13 @@
         .custom-select select {
             display: none;
             /*hide original SELECT element: */
-        }
+        /* }
         
         .select-selected {
             background-color: DodgerBlue;
-        }
+        } */
         /* Style the arrow inside the select element: */
-        
-        .select-selected:after {
+        /* .select-selected:after {
             position: absolute;
             content: "";
             top: 14px;
@@ -276,43 +289,38 @@
             height: 0;
             border: 6px solid transparent;
             border-color: #fff transparent transparent transparent;
-        }
+        } */
         /* Point the arrow upwards when the select box is open (active): */
-        
-        .select-selected.select-arrow-active:after {
+        /* .select-selected.select-arrow-active:after {
             border-color: transparent transparent #fff transparent;
             top: 7px;
-        }
+        } */
         /* style the items (options), including the selected item: */
-        
-        .select-items div,
+        /* .select-items div,
         .select-selected {
             color: #ffffff;
             padding: 8px 16px;
             border: 1px solid transparent;
             border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
             cursor: pointer;
-        }
+        } */
         /* Style items (options): */
-        
-        .select-items {
+        /* .select-items {
             position: absolute;
             background-color: DodgerBlue;
             top: 100%;
             left: 0;
             right: 0;
             z-index: 99;
-        }
+        } */
         /* Hide the items when the select box is closed: */
-        
-        .select-hide {
+        /* .select-hide {
             display: none;
-        }
-        
-        .select-items div:hover,
+        } */
+        /* .select-items div:hover,
         .same-as-selected {
             background-color: rgba(0, 0, 0, 0.1);
-        }
+        } */
     </style>
     <nav id="menu"></nav>
     <div id="manual-single">
@@ -328,8 +336,10 @@
     <div id="map"></div>
     <!-- <button id='interactionButton' onclick="lockMap()">Map Lock</button> -->
 
-    <div id='state-legend' class='legend'>
-        <h4>Percent Change:</h4>
+    <div id='income-legend' class='legend'>
+        <div id="title">
+            <h4></h4>
+        </div>
         <div><span style='background-color: #e92f2f '></span>100</div>
         <div><span style='background-color: #fffcd6'></span>0</div>
         <div><span style='background-color: #00a4d1'></span>-100</div>

@@ -262,9 +262,9 @@ function dropDownSelect() {
  */
 //document.getElementById('interactionButton').addEventListener('click', function() {
 function lockMap() {
-    console.log("here");
+    console.log(isLocked);
     // lock the map 
-    if (isLocked == false) {
+    if (!isLocked) {
         map.boxZoom.disable();
         map.scrollZoom.disable();
         map.dragPan.disable();
@@ -273,10 +273,15 @@ function lockMap() {
         map.doubleClickZoom.disable();
         map.touchZoomRotate.disable();
         isLocked = true;
+        console.log(isLocked);
+        map.interactive = false;
+
     }
 
     // unlock the map 
-    if (isLocked == true) {
+    else {
+        console.log("in true" + isLocked);
+
         map.boxZoom.enable();
         map.scrollZoom.enable();
         map.dragPan.enable();

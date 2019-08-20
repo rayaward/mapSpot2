@@ -541,7 +541,7 @@ map.on('click', 'Median Income', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>' + '<h6>Georgia Median: $52,977<br>Louisiana Median: $46,710<br>United States Median: $57,652</h6>')
+        .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>' + '<h6>Georgia Median:   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $52,977<br>Louisiana Median:    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $46,710<br>United States Median: $57,652</h6>')
         .addTo(map);
 });
 
@@ -570,7 +570,7 @@ map.on('click', 'Percent College Educated', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: 29.9%<br>Louisiana: 23.4%<br>United States: 30.9%</h6>')
+        .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;29.9%<br>Louisiana:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;23.4%<br>United States: &nbsp;30.9%</h6>')
         .addTo(map);
 });
 

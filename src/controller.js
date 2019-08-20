@@ -23,6 +23,7 @@ var projRatio = 0.5
 var zoomAdd = 2.75
 
 var isLocked = false
+var selectedCity;
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -30,8 +31,7 @@ const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0
 })
 
-document.getElementById("interactionButton").setAttribute('disabled', 'enabled');
-
+//document.getElementById("interactionButton").setAttribute('disabled', 'enabled');
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Create the map.                                                                                                   */
@@ -224,6 +224,35 @@ socket.on('pushSensorUpdate', function(data) {
     map.easeTo({ center: { lng: projLong, lat: projLat }, zoom: (curZoom + zoomAdd), bearing: curBearing, duration: 1000 })
 });
 
+function dropDownSelect() {
+    selectedCity = document.getElementById('input').value;
+    //document.getElementById('output').innerHTML = a;
+    if (selectedCity === 'Atlanta') {
+        map.flyTo({
+            center: [-84.3951, 33.7634],
+            zoom: 12,
+            minZoom: 10,
+            speed: 2.5
+        });
+    }
+    if (selectedCity === 'New Orleans') {
+        map.flyTo({
+            center: [-90.0715, 29.9511],
+            zoom: 12,
+            minZoom: 10,
+            speed: 2.5
+        });
+    }
+    if (selectedCity === 'Savannah') {
+        map.flyTo({
+            center: [-81.0912, 32.0809],
+            zoom: 12,
+            minZoom: 10,
+            speed: 2.5
+        });
+    }
+    console.log(map.center);
+}
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Lock the map.                                                                                                   */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -231,7 +260,9 @@ socket.on('pushSensorUpdate', function(data) {
  * when button is clicked, all user interaction (pinch/drag) with map is
  * disabled to "lock" so map does not become disaligned while drawing
  */
-document.getElementById('interactionButton').addEventListener('click', function() {
+//document.getElementById('interactionButton').addEventListener('click', function() {
+function lockMap() {
+    console.log("here");
     // lock the map 
     if (isLocked == false) {
         map.boxZoom.disable();
@@ -255,7 +286,7 @@ document.getElementById('interactionButton').addEventListener('click', function(
         map.touchZoomRotate.enable();
         isLocked = false;
     }
-});
+}
 
 
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -441,31 +472,52 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
             socket.emit('hideLayer', { 'clickedLayer': clickedLayer })
             this.className = '';
+            console.log(this);
         } else {
+            // hide all layers
+            var activeItem = document.getElementsByClassName('active');
+            if (activeItem[0]) {
+                activeItem[0].classList.remove('active');
+            }
+            map.setLayoutProperty('Median Income', 'visibility', 'none');
+            socket.emit('hideLayer', { 'clickedLayer': 'Median Income' })
+
+            map.setLayoutProperty('Percent College Educated', 'visibility', 'none');
+            socket.emit('hideLayer', { 'clickedLayer': 'Percent College Educated' })
+
+            map.setLayoutProperty('Percent White Occupancy', 'visibility', 'none');
+            socket.emit('hideLayer', { 'clickedLayer': 'Percent White Occupancy' })
+
             this.className = 'active';
             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
             socket.emit('showLayer', { 'clickedLayer': clickedLayer })
         }
-        console.log("Sending layer change...")
     };
 
     var layers = document.getElementById('menu');
     layers.appendChild(link);
 }
 
+/*--------------------------------------------------------------------------------------------------------------------*/
+/*  Enable pop ups                                                                                             */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
 // When a click event occurs on a tract in the median income layer, open a popup at the
 // location of the tract, with description HTML from its properties.
 map.on('click', 'Median Income', function(e) {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    // Check if there is already a popup on the map and if so, remove it
+    if (popUps[0]) popUps[0].remove();
+
     var coordinates = e.lngLat;
-    var tract = e.features[0].properties.Geo_display_label;
+    var tract = e.features[0].properties.NAMELSAD;
     var description = e.features[0].properties.MedIncome;
     description = formatter.format(description);
 
-    new mapboxgl.Popup()
+    var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML(description)
+        .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>')
         .addTo(map);
-
 });
 
 // Change the cursor to a pointer when the mouse is over the places layer.
@@ -475,5 +527,62 @@ map.on('mouseenter', 'Median Income', function() {
 
 // Change it back to a pointer when it leaves.
 map.on('mouseleave', 'Median Income', function() {
+    map.getCanvas().style.cursor = '';
+});
+
+
+/* Percent College Educated */
+// When a click event occurs on a tract in the percent college educated layer, open a popup at the
+// location of the tract, with description HTML from its properties.
+map.on('click', 'Percent College Educated', function(e) {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    // Check if there is already a popup on the map and if so, remove it
+    if (popUps[0]) popUps[0].remove();
+
+    var coordinates = e.lngLat;
+    var tract = e.features[0].properties.NAMELSAD;
+    var description = e.features[0].properties.PctBachorH;
+
+    var popup = new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>')
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'Percent College Educated', function() {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'Percent College Educated', function() {
+    map.getCanvas().style.cursor = '';
+});
+
+/* Percent White Occupancy */
+// When a click event occurs on a tract in the percent White Occupancy layer, open a popup at the
+// location of the tract, with description HTML from its properties.
+map.on('click', 'Percent White Occupancy', function(e) {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    // Check if there is already a popup on the map and if so, remove it
+    if (popUps[0]) popUps[0].remove();
+
+    var coordinates = e.lngLat;
+    var tract = e.features[0].properties.NAMELSAD;
+    var description = e.features[0].properties.White_pop;
+
+    var popup = new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML('<h3>Percent White Occupancy</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>')
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'Percent White Occupancy', function() {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'Percent White Occupancy', function() {
     map.getCanvas().style.cursor = '';
 });

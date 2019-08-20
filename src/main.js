@@ -38,41 +38,6 @@ io.on('connection', function(socket) {
         console.log("Map Updated")
     });
 
-    // Fired when property assessment layer is added from controller
-    socket.on("addTA", function(data) {
-        socket.broadcast.emit("addTA", data);
-    });
-
-    // Fired when property assessment layer is removed from controller
-    socket.on("removeTA", function(data) {
-        console.log("Property assessment removed")
-        socket.broadcast.emit("removeTA", data);
-    });
-
-    // Fired when the table
-    socket.on("processTableData", function(data) {
-        console.log("Loading data for table")
-        getPoints(data).then(function(results) {
-            socket.broadcast.emit("displayTableData", results);
-        })
-    });
-
-    // Fired when the table
-    socket.on("refreshTable", function(data) {
-        console.log("Refresh table, firing get table bounds")
-        socket.broadcast.emit("getTableBounds");
-    });
-
-    // Fired when a property assessment entry is deselected from the controller
-    socket.on("removeMarker", function(data) {
-        socket.broadcast.emit("removeMarker", data);
-    });
-
-    // Fired when a property assessment entry is selected on the controller
-    socket.on("newMarker", function(data) {
-        socket.broadcast.emit("newMarker", data);
-    });
-
     // Fired when keyboard keys are used to nudge map on projector
     socket.on("projNudge", function(data) {
         console.log(data.direction)

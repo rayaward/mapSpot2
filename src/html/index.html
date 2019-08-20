@@ -145,6 +145,24 @@
             background: #2ECC71;
         }
         
+        #input {
+            background: #fff;
+            position: absolute;
+            z-index: 1;
+            top: 200px;
+            right: 10px;
+            padding: 10px;
+            border-radius: 3px;
+            width: 175px;
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 18px;
+            color: #404040;
+            text-align: center;
+            text-overflow: inherit;
+            border-radius: 5px;
+        }
+        
         .legend {
             background-color: #fff;
             border-radius: 3px;
@@ -171,8 +189,131 @@
             margin-right: 5px;
             width: 10px;
         }
+        /* Marker tweaks */
+        
+        .mapboxgl-popup-close-button {
+            display: none;
+        }
+        
+        .mapboxgl-popup-content {
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+            padding: 0;
+            width: 180px;
+        }
+        
+        .mapboxgl-popup-content-wrapper {
+            padding: 1%;
+        }
+        
+        .mapboxgl-popup-content h3 {
+            background: #2ECC71;
+            color: #fff;
+            margin: 0;
+            display: block;
+            padding: 10px;
+            border-radius: 3px 3px 0 0;
+            font-weight: 700;
+            margin-top: -15px;
+        }
+        
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            display: block;
+            padding: 10px;
+            padding-top: 0px;
+            padding-bottom: 15px;
+            font-weight: 400;
+            font-size: 32px;
+        }
+        
+        .mapboxgl-popup-content h5 {
+            margin: 0;
+            display: block;
+            padding: 10px;
+            padding-bottom: 3px;
+            color: #2ECC71;
+            font-weight: 500;
+        }
+        
+        .mapboxgl-popup-content div {
+            padding: 10px;
+        }
+        
+        .mapboxgl-container .leaflet-marker-icon {
+            cursor: pointer;
+        }
+        
+        .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+            margin-top: 15px;
+        }
+        
+        .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
+            border-bottom-color: #2ECC71;
+        }
+        /* The container must be positioned relative: */
+        
+        .custom-select {
+            position: relative;
+            font-family: Arial;
+        }
+        
+        .custom-select select {
+            display: none;
+            /*hide original SELECT element: */
+        }
+        
+        .select-selected {
+            background-color: DodgerBlue;
+        }
+        /* Style the arrow inside the select element: */
+        
+        .select-selected:after {
+            position: absolute;
+            content: "";
+            top: 14px;
+            right: 10px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-color: #fff transparent transparent transparent;
+        }
+        /* Point the arrow upwards when the select box is open (active): */
+        
+        .select-selected.select-arrow-active:after {
+            border-color: transparent transparent #fff transparent;
+            top: 7px;
+        }
+        /* style the items (options), including the selected item: */
+        
+        .select-items div,
+        .select-selected {
+            color: #ffffff;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+            cursor: pointer;
+        }
+        /* Style items (options): */
+        
+        .select-items {
+            position: absolute;
+            background-color: DodgerBlue;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+        }
+        /* Hide the items when the select box is closed: */
+        
+        .select-hide {
+            display: none;
+        }
+        
+        .select-items div:hover,
+        .same-as-selected {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
     </style>
-
     <nav id="menu"></nav>
     <div id="manual-single">
         <button id='move-button-ud' onclick="map.panBy([0, -2])">&uarr;</button>
@@ -185,8 +326,7 @@
         <button id='move-button-ud' onclick="map.panBy([0, 2])">&darr;</button>
     </div>
     <div id="map"></div>
-    <canvas id="shortRect"></canvas>
-    <canvas id="longRect"></canvas>
+    <!-- <button id='interactionButton' onclick="lockMap()">Map Lock</button> -->
 
     <div id='state-legend' class='legend'>
         <h4>Percent Change:</h4>
@@ -194,9 +334,18 @@
         <div><span style='background-color: #fffcd6'></span>0</div>
         <div><span style='background-color: #00a4d1'></span>-100</div>
     </div>
-    <br/>
-    <button id='interactionButton'>Map Lock</button>
+    <!-- <div class="custom-select" style="width:200px;"> -->
+    <select id='input' onchange="dropDownSelect()">
+        <option>Select City: </option>
+        <option>Atlanta</option>
+        <option>New Orleans</option>
+        <option>Savannah</option>
+    </select>
+    <!-- </div> -->
+    </div>
 
+    <div id='ouput'>
+    </div>
     <script type="text/javascript" src="controller.js">
     </script>
 
